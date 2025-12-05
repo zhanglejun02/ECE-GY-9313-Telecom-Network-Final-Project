@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 使用方法: bash run_lora.sh <数据集名称>
-# 例如: bash run_lora.sh DC
+# use: bash run_lora.sh <数据集名称>
+# example: bash run_lora.sh DC
 
 DATASET=$1
 
@@ -10,13 +10,12 @@ if [ -z "$DATASET" ]; then
     exit 1
 fi
 
-# 默认设置，可根据显存调整
-# 如果显存不够 (如 < 24GB)，添加 --use_4bit 参数
+
 BATCH_SIZE=2
 GRAD_ACCUM=1
 MAX_LEN=1024
 
-# 根据数据集设置参数
+
 case $DATASET in
     DC)
         NUM_LABELS=4
@@ -52,7 +51,7 @@ esac
 echo "Running LoRA training for $DATASET..."
 echo "Labels: $NUM_LABELS, K: $K_NUMBER, Threshold: $TH_VALUE"
 
-# 1. 准备数据 (假设预处理数据在 preprocessed_data 文件夹)
+# 1. as preprocessed_data 
 if [ ! -d "preprocessed_data/$DATASET" ]; then
     echo "Error: Preprocessed data not found in preprocessed_data/$DATASET"
     exit 1
@@ -62,8 +61,7 @@ mkdir -p temp_dir
 cp -r preprocessed_data/$DATASET/* temp_dir/
 echo "Data loaded to temp_dir"
 
-# 2. 运行 Python 脚本
-# 如果显存不足，请在最后添加 --use_4bit
+# run pyrhon training script
 python train_lora.py \
     --dataset $DATASET \
     --num_labels $NUM_LABELS \
@@ -76,5 +74,5 @@ python train_lora.py \
     --lr 1e-4 \
     --use_4bit
 
-# 3. 清理
+# 3. cleanup
 # rm -rf temp_dir

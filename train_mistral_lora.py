@@ -18,7 +18,7 @@ from transformers import (AutoModelForSequenceClassification,
                           BitsAndBytesConfig)
 from peft import get_peft_model, LoraConfig, TaskType
 
-# 设置随机种子
+
 def set_seed(seed=42):
     random.seed(seed)
     np.random.seed(seed)
@@ -27,10 +27,10 @@ def set_seed(seed=42):
 
 set_seed(42)
 
-# GLM-4模型路径
-# GLM4_MODEL_PATH = "/nlp/common_models/zai-org/glm-4-9b" 
-# GLM4_MODEL_PATH = "/nlp/common_models/Qwen/Qwen3-4B-Instruct-2507"
-GLM4_MODEL_PATH = "/maindata/data/shared/ai_story_workspace-dsw/common_models/mistralai/Mistral-Nemo-Instruct-2407"
+
+# MODEL_PATH = "/nlp/common_models/zai-org/glm-4-9b" 
+# MODEL_PATH = "/nlp/common_models/Qwen/Qwen3-4B-Instruct-2507"
+MODEL_PATH = "/maindata/data/shared/ai_story_workspace-dsw/common_models/mistralai/Mistral-Nemo-Instruct-2407"
 
 class DatasetCreator(Dataset):
     def __init__(self, processed_data, train):
@@ -246,7 +246,7 @@ def train_epoch(model, dataloader, optimizer, scheduler, device, accumulation_st
     
     optimizer.zero_grad()
     
-    # 强制使用 bfloat16，如果显卡不支持(如P40, V100)，请改为 float32 或 float16
+    # use bfloat16，if the GPU can not use it like(P40, V100)，change to float32 or float16
     dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float32
     if not torch.cuda.is_bf16_supported():
         print("Warning: BFloat16 not supported, falling back to Float32. This may consume more memory.")
@@ -255,8 +255,7 @@ def train_epoch(model, dataloader, optimizer, scheduler, device, accumulation_st
     for step, batch in enumerate(pbar):
         batch = {k: v.to(device) for k, v in batch.items()}
         
-        # 修复1: 显式指定 dtype 为 bfloat16，避免 float16 溢出
-        # 修复2: 移除 GradScaler (BF16 不需要)
+        # Mixed precision context
         with torch.amp.autocast('cuda', dtype=dtype):
             outputs = model(**batch)
             loss = outputs.loss / accumulation_steps
@@ -296,7 +295,7 @@ def predict_and_extract(model, dataloader, device, desc="Predicting"):
             with torch.amp.autocast('cuda', dtype=dtype):
                 outputs = model(**batch)
                 logits = outputs.logits
-            all_logits.append(logits.float().cpu().numpy()) # 转回 float32 用于 numpy 计算
+            all_logits.append(logits.float().cpu().numpy()) # 
             
     return np.concatenate(all_logits, axis=0)
 
@@ -328,10 +327,10 @@ def main():
     open_df = pd.read_csv('./temp_dir/open.csv')
 
     # ================= Load Model & LoRA =================
-    print(f"Loading GLM-4 from {GLM4_MODEL_PATH}")
-    tokenizer = AutoTokenizer.from_pretrained(GLM4_MODEL_PATH, trust_remote_code=True)
+    print(f"Loading GLM-4 from {MODEL_PATH}")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, trust_remote_code=True)
     
-    # 强制模型使用 BFloat16 加载
+    
     torch_dtype = torch.bfloat16
     
     quantization_config = None
@@ -342,9 +341,9 @@ def main():
             bnb_4bit_quant_type="nf4"
         )
 
-    # 加载模型
+    # 
     model = AutoModelForSequenceClassification.from_pretrained(
-        GLM4_MODEL_PATH,
+        MODEL_PATH,
         num_labels=args.num_labels,
         trust_remote_code=True,
         quantization_config=quantization_config,
@@ -405,7 +404,7 @@ def main():
         )
         print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}")
         
-        # 简单的 NaN 检查，如果整个 epoch 都是 NaN，停止训练
+        # Check for NaN loss
         if pd.isna(train_loss):
             print("Error: Train loss is NaN. Stopping training.")
             break
