@@ -4,7 +4,7 @@
 In this repository, we guide you to run this projec. 
 A complete run including model downloading, trian and inference, which is time-consuming.
 I have provided the train & inference log file for your convenience to check.
-[logfile](https://drive.google.com/drive/folders/1Br5Vr6u-cjVKA_K6H1nfySBPS2cL5QnP?dmr=1&ec=wgc-drive-hero-goto)
+[logfile](https://drive.google.com/drive/folders/1Br5Vr6u-cjVKA_K6H1nfySBPS2cL5QnP?usp=drive_link)
 
 **Datasets:** [AWF](https://arxiv.org/abs/1708.06376), [DF](https://arxiv.org/abs/1801.02265), [DC](https://www.semanticscholar.org/paper/Deep-Content%3A-Unveiling-Video-Streaming-Content-Li-Huang/f9feff95bc1d68674d5db426053f417bd2c8786b), [USTC](https://drive.google.com/file/d/1F09zxln9iFg2HWoqc6m4LKFhYK7cDQv_/view), [CSTNet-tls](https://drive.google.com/drive/folders/1JSsYmevkxQFanoKOi_i1ooA6pH3s9sDr)
 
