@@ -1,4 +1,4 @@
-## TrafficLLM: LLMs for Improved Open-Set Encrypted Traffic Analysis
+## Final Project
 
 
 In this repository, we guide you to run this projec. 
