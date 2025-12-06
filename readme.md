@@ -74,7 +74,7 @@ change the QWEN3_MODEL_PATH to your local path in file train_lora.py
 
 Then 
 ```
-bash run_lara.sh <dataset_name>
+bash run_lora.sh <dataset_name>
 ```
 ### Mistral Fine-tunning
 
@@ -86,7 +86,7 @@ change file name to train_mistral_lora.py in run_lora.sh file
 
 Then
 ```
-bash run_lara.sh <dataset_name>
+bash run_lora.sh <dataset_name>
 ```
 ### Gemma Fine-tunning
 
@@ -96,7 +96,7 @@ change the QWEN3_MODEL_PATH to your local Gemma Model path in file train_lora.py
 
 Then
 ```
-bash run_lara.sh <dataset_name>
+bash run_lora.sh <dataset_name>
 ```
 
 
